@@ -5,7 +5,6 @@ import 'dotenv/config'
 import cors from 'cors'
 import { connectDB } from './config/db'
 import { corsConfig } from './config/cors'
-import { configureSocket } from './handlers/socket'
 
 // ROUTES
 import userPanelRouter from './routes/userPanelRoute'
@@ -15,6 +14,7 @@ import eventRouter from './routes/eventRoute'
 import hostRouter from './routes/hostRoute'
 import associateRouter from './routes/associateRoute'
 import youtubeRouter from './routes/youtubeRoute'
+import { chatSocket } from './sockets/chatSocker'
 
 connectDB()
 
@@ -32,15 +32,11 @@ app.use('/api/host', hostRouter)
 app.use('/api/associate', associateRouter)
 app.use('/api/youtube', youtubeRouter)
 
-// Crear servidor HTTP para usar con Socket.IO
+// Servidor HTTP + Socket.IO
 const httpServer = createServer(app)
+const io = new Server(httpServer, { cors: corsConfig })
 
-// Crear instancia de Socket.IO
-const io = new Server(httpServer, {
-  cors: corsConfig,
-})
-
-// Configurar los sockets
-configureSocket(io)
+// Configurar sockets
+chatSocket(io)
 
 export { app, httpServer }
