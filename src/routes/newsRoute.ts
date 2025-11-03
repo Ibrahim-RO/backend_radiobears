@@ -10,6 +10,6 @@ router.get("/", NewsController.getAll);
 router.get("/:id", NewsController.getById);
 router.post("/", upload.single("image"), NewsController.create);
 router.put("/:id", upload.single("image"), NewsController.update);
-router.delete("/:id", NewsController.delete);
+router.delete("/:id", NewsController.delete)
 
 export default router;
