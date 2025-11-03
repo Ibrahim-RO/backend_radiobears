@@ -1,11 +1,10 @@
-// src/controllers/NewsController.ts
 import { Request, Response } from "express";
 import { v4 as uuid } from "uuid";
 import cloudinary from "../config/cloudinary";
 import News from "../models/News";
 
 export class NewsController {
-    static getAll = async (req: Request, res: Response) => {
+    static getAll = async (req: Request, res: Response): Promise<void> => {
         try {
             const news = await News.findAll({ order: [["id", "DESC"]] });
             res.status(200).json(news);
@@ -15,13 +14,14 @@ export class NewsController {
         }
     };
 
-    static create = async (req: Request, res: Response) => {
+    static create = async (req: Request, res: Response): Promise<void> => {
         try {
             const { title, content } = req.body;
 
             const existingNews = await News.findOne({ where: { title } });
             if (existingNews) {
-                return res.status(409).json({ error: "Ya existe una noticia con ese título" });
+                res.status(409).json({ error: "Ya existe una noticia con ese título" });
+                return;
             }
 
             let imageUrl: string | null = null;
@@ -55,11 +55,14 @@ export class NewsController {
         }
     };
 
-    static getById = async (req: Request, res: Response) => {
+    static getById = async (req: Request, res: Response): Promise<void> => {
         try {
             const { id } = req.params;
             const news = await News.findByPk(id);
-            if (!news) return res.status(404).json({ error: "Noticia no encontrada" });
+            if (!news) {
+                res.status(404).json({ error: "Noticia no encontrada" });
+                return;
+            }
             res.status(200).json(news);
         } catch (error) {
             console.error(error);
@@ -67,13 +70,16 @@ export class NewsController {
         }
     };
 
-    static update = async (req: Request, res: Response) => {
+    static update = async (req: Request, res: Response): Promise<void> => {
         try {
             const { id } = req.params;
             const { title, content } = req.body;
 
             const news = await News.findByPk(id);
-            if (!news) return res.status(404).json({ error: "Noticia no encontrada" });
+            if (!news) {
+                res.status(404).json({ error: "Noticia no encontrada" });
+                return;
+            }
 
             let imageUrl = news.image;
 
@@ -100,11 +106,14 @@ export class NewsController {
         }
     };
 
-    static delete = async (req: Request, res: Response) => {
+    static delete = async (req: Request, res: Response): Promise<void> => {
         try {
             const { id } = req.params;
             const news = await News.findByPk(id);
-            if (!news) return res.status(404).json({ error: "Noticia no encontrada" });
+            if (!news) {
+                res.status(404).json({ error: "Noticia no encontrada" });
+                return;
+            }
 
             await news.destroy();
             res.status(200).json({ message: "Noticia eliminada correctamente" });
