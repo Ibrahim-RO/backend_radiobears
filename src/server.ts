@@ -14,6 +14,7 @@ import eventRouter from './routes/eventRoute'
 import hostRouter from './routes/hostRoute'
 import associateRouter from './routes/associateRoute'
 import youtubeRouter from './routes/youtubeRoute'
+import newsRouter from './routes/newsRoute'
 import { chatSocket } from './sockets/chatSocker'
 
 connectDB()
@@ -31,6 +32,7 @@ app.use('/api/event', eventRouter)
 app.use('/api/host', hostRouter)
 app.use('/api/associate', associateRouter)
 app.use('/api/youtube', youtubeRouter)
+app.use('/api/news', newsRouter)
 
 // Servidor HTTP + Socket.IO
 const httpServer = createServer(app)
